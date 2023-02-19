@@ -1,3 +1,4 @@
+import json
 import sqlite3
 import datetime
 
@@ -53,6 +54,21 @@ def Log(cursor, Parameter, Level, Source, Time, Value):
     except sqlite3.Error as error:
         print("Error during inserting value!\n", error)
 
+def Log_json(cursor, s):
+    """
+    Функция для выполнения сохранения параметра, принятого в
+    формате JSON.
+    """
+
+    try:
+        events = json.loads(s)
+    except json.decoder.JSONDecodeError as error:
+        print("Error in JSON line!", error)
+        return
+
+    for event in events["Events"]:
+        Log(cursor, event["Parameter"], event["Level"], event["Source"], event["Time"], event["Value"])
+
 
 try:
     sqlite_connection = sqlite3.connect("../db/test.db")
@@ -67,8 +83,13 @@ current_time = datetime.datetime.now()
 time_stamp = current_time.timestamp()
 date_time = datetime.datetime.fromtimestamp(time_stamp)
 
-for i in range(0,1):
-    Log(cursor, 'MB1', "INFO", "GENERATOR", date_time, 1.23)
+# for i in range(0,1):
+#     Log(cursor, 'MB1', "INFO", "GENERATOR", date_time, 1.23)
+
+with open('../db/test.json') as f:
+    s = f.read()
+Log_json(cursor, s)
+
 
 current_time = datetime.datetime.now()
 time_stamp2 = current_time.timestamp()
