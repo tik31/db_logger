@@ -1,0 +1,43 @@
+{
+	"Events": [
+		{
+			"Parameter" 	: "MB1",
+			"Level"			: "INFO", 
+			"Source"		: "GENERATOR",
+			"Time"			: "2023-02-19 20:50:21.871238", 
+			"Value"			: "1"
+		},
+
+		{
+			"Parameter" 	: "MB2",
+			"Level"			: "INFO", 
+			"Source"		: "GENERATOR",
+			"Time"			: "2023-02-19 20:50:21.871238", 
+			"Value"			: "2"
+		},
+
+		{
+			"Parameter" 	: "MB3",
+			"Level"			: "WARNING", 
+			"Source"		: "GENERATOR",
+			"Time"			: "2023-02-19 20:50:21.871238", 
+			"Value"			: "3"
+		},
+
+		{
+			"Parameter" 	: "MB4",
+			"Level"			: "ERROR", 
+			"Source"		: "GENERATOR",
+			"Time"			: "2023-02-19 20:50:21.871238", 
+			"Value"			: "4"
+		},
+
+		{
+			"Parameter" 	: "MB5",
+			"Level"			: "INFO", 
+			"Source"		: "GENERATOR",
+			"Time"			: "2023-02-19 20:50:21.871238", 
+			"Value"			: "5"
+		}
+	]
+}
