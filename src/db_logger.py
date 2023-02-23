@@ -1,6 +1,7 @@
 import json
 import sqlite3
 import datetime
+import os
 
 class db_logger:
 
@@ -33,6 +34,20 @@ class db_logger:
                 del(self.sqlite_connection)
                 if (hasattr(self, "cursor")):
                     del(self.cursor)
+
+    def create_database(self, db_path):
+
+        # Чтение SQL-скрипта для инициализации БД
+        try:
+            sql_path = os.path.dirname(os.path.abspath(__file__))
+            with open(sql_path + '/sql/create_db.sql', 'r') as sql_file:
+                sql_script = sql_file.read()
+            self.cursor.executescript(sql_script)
+        except IOError as error:
+            print("Cann't open file")
+        except sqlite3.Error:
+            print("Error during creating DB")
+        self.sqlite_connection.commit()
 
 
     def log(self, Parameter, Level, Source, Time, Value):
@@ -102,43 +117,3 @@ class db_logger:
         for event in events["Events"]:
             self.log(event["Parameter"], event["Level"], event["Source"], event["Time"], event["Value"])
 
-#logger = db_logger()
-#logger.open_database("../db/test.db")
-
-#with open('../db/test.json') as f:
-#    s = f.read()
-#logger.log_json(s)
-
-
-#logger.close_database()
-#del(logger)
-
-
-"""
-try:
-    sqlite_connection = sqlite3.connect("../db/test.db")
-    cursor = sqlite_connection.cursor()
-except sqlite3.Error as error:
-    print("Error during connection to database!", error)
-
-current_time = datetime.datetime.now()
-time_stamp1 = current_time.timestamp()
-
-current_time = datetime.datetime.now()
-time_stamp = current_time.timestamp()
-date_time = datetime.datetime.fromtimestamp(time_stamp)
-
-# for i in range(0,1):
-#     Log(cursor, 'MB1', "INFO", "GENERATOR", date_time, 1.23)
-
-with open('../db/test.json') as f:
-    s = f.read()
-Log_json(cursor, s)
-
-
-current_time = datetime.datetime.now()
-time_stamp2 = current_time.timestamp()
-print(time_stamp2 - time_stamp1)
-"""
-#sqlite_connection.commit()  
-#sqlite_connection.close()

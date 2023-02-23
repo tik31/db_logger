@@ -37,11 +37,3 @@ class db_logger_zmq(db_logger.db_logger):
 		self.subscriber.close()
 		self.context.term()
 		self.close_database()
-
-
-logger = db_logger_zmq("tcp://localhost:5559")
-logger.open_database("../db/test.db")
-logger.connect()
-logger.subscribe(["MULT", "GEN", ])
-logger.listen()
-del(logger)
