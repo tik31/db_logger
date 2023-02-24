@@ -1,11 +1,14 @@
 import time
 import zmq
 import db_logger
+import threading
 
-class db_logger_zmq(db_logger.db_logger):
+class db_logger_zmq(db_logger.db_logger, threading.Thread):
 	
 	def __init__(self, address):
-		super(db_logger_zmq, self).__init__()
+		# super(db_logger_zmq, self).__init__()
+		db_logger.db_logger.__init__(self)
+		threading.Thread.__init__(self, daemon = True)
 		self.address = address
 
 	def connect(self):
@@ -22,7 +25,7 @@ class db_logger_zmq(db_logger.db_logger):
 		for i in l:
 			self.subscriber.setsockopt(zmq.SUBSCRIBE, i.encode("utf-8"))	
 
-	def listen(self):
+	def run(self):
 		try:
 			while True:
 				[address, contents] = self.subscriber.recv_multipart()
@@ -32,6 +35,9 @@ class db_logger_zmq(db_logger.db_logger):
 			print("\nStopped by user")
 		finally:
 			self.close()
+
+	def listen(self):
+		self.start()
 
 	def close(self):
 		self.subscriber.close()

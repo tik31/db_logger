@@ -114,6 +114,6 @@ class db_logger:
             print("Error in JSON line!", error)
             return
 
-        for event in events["Events"]:
+        for event in events:
             self.log(event["Parameter"], event["Level"], event["Source"], event["Time"], event["Value"])
 
