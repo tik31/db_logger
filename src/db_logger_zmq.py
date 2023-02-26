@@ -29,8 +29,7 @@ class db_logger_zmq(db_logger.db_logger, threading.Thread):
 		try:
 			while True:
 				[address, contents] = self.subscriber.recv_multipart()
-				# logger.log_json(contents)
-				print("Recieved")
+				self.log_json(contents)
 		except KeyboardInterrupt:
 			print("\nStopped by user")
 		finally:

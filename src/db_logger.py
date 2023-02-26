@@ -18,7 +18,7 @@ class db_logger:
 
     def open_database(self, db_path):
         try:
-            self.sqlite_connection = sqlite3.connect(db_path)
+            self.sqlite_connection = sqlite3.connect(db_path, check_same_thread = False)
             self.cursor = self.sqlite_connection.cursor()
         except sqlite3.Error as error:
             print("Error during connection to database!", error)
@@ -102,6 +102,8 @@ class db_logger:
         except sqlite3.Error as error:
             print("Error during inserting value!\n", error)
 
+        self.sqlite_connection.commit()
+
     def log_json(self, s):
         """
         Функция для выполнения сохранения параметра, принятого в
@@ -114,6 +116,8 @@ class db_logger:
             print("Error in JSON line!", error)
             return
 
-        for event in events:
-            self.log(event["Parameter"], event["Level"], event["Source"], event["Time"], event["Value"])
-
+        if isinstance(events, list):
+            for event in events:
+                self.log(event["Parameter"], event["Level"], event["Source"], event["Time"], event["Value"])
+        else:
+            self.log(events["Parameter"], events["Level"], events["Source"], events["Time"], events["Value"])

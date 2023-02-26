@@ -40,9 +40,6 @@ CREATE TABLE events (
 	id_level		INTEGER,
 	id_producer		INTEGER,
 	event_time 		TEXT,
-	int_values  	INTEGER,
-	text_values 	TEXT,
-	real_values 	REAL,
 	FOREIGN KEY (id_parameter) REFERENCES parameters(id),
 	FOREIGN KEY (id_level) REFERENCES levels(id),
 	FOREIGN KEY (id_producer) REFERENCES producers(id)
