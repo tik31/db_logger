@@ -3,6 +3,21 @@ import sqlite3
 import datetime
 import os
 
+class db_logger_error(Exception):
+
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'DB Logger ERROR: \n{0} '.format(self.message)
+        else:
+            return 'DB Logger ERROR has been raised'
+
+
 class db_logger:
 
     def __init__(self):
@@ -21,7 +36,7 @@ class db_logger:
             self.sqlite_connection = sqlite3.connect(db_path, check_same_thread = False)
             self.cursor = self.sqlite_connection.cursor()
         except sqlite3.Error as error:
-            print("Error during connection to database!", error)
+            raise db_logger_error("Error during connection to database.\n" + str(error))
 
     def close_database(self):
         if (hasattr(self, "sqlite_connection")):
@@ -29,7 +44,7 @@ class db_logger:
                 self.sqlite_connection.commit()
                 self.sqlite_connection.close()
             except sqlite3.Error as error:
-                print("Error during closing database!", error)
+                raise db_logger_error("Error during closing to database.\n" + str(error))
             finally:
                 del(self.sqlite_connection)
                 if (hasattr(self, "cursor")):
@@ -44,9 +59,9 @@ class db_logger:
                 sql_script = sql_file.read()
             self.cursor.executescript(sql_script)
         except IOError as error:
-            print("Cann't open file")
+            raise db_logger_error("Can not open file with SQL init script.")
         except sqlite3.Error:
-            print("Error during creating DB")
+            raise db_logger_error("Error during creating database.")
         self.sqlite_connection.commit()
 
 
@@ -75,7 +90,7 @@ class db_logger:
                     (Time, Parameter, Level, Source)
             )
         except sqlite3.Error as error:
-            print("Error during inserting event!\n", error)
+            raise db_logger_error("Error during inserting event.\n" + str(error))
 
     
         id_event = self.cursor.lastrowid
@@ -89,7 +104,7 @@ class db_logger:
                     (Parameter, )
 	      )
         except sqlite3.Error as error:
-            print("Error finding table name!\n", error)
+            raise db_logger_error("Error finding table name.\n" + str(error))
 	
         table_name = self.cursor.fetchall()[0][0]
     
@@ -100,7 +115,7 @@ class db_logger:
                     (id_event, Value)
             )
         except sqlite3.Error as error:
-            print("Error during inserting value!\n", error)
+            raise db_logger_error("Error during inserting value.\n" + str(error))
 
         self.sqlite_connection.commit()
 
@@ -113,7 +128,7 @@ class db_logger:
         try:
             events = json.loads(s)
         except json.decoder.JSONDecodeError as error:
-            print("Error in JSON line!", error)
+            raise db_logger_error("Error in JSON line.\n" + str(error))
             return
 
         if isinstance(events, list):

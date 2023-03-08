@@ -18,7 +18,7 @@ class db_logger_zmq(db_logger.db_logger, threading.Thread):
 		try:
 			self.subscriber.connect(self.address)
 		except zmq.ZMQError as error:
-			print("Error during connecting to ZMQ proxy:", error)
+			raise db_logger_error("Error during connecting to ZMQ proxy.\n" + str(error))
 
 
 	def subscribe(self, l):
